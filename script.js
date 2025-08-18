@@ -135,3 +135,11 @@ function loadTasks() {
 addTaskButton.addEventListener('click', addTask);
 window.addEventListener('load', loadTasks);
 
+[taskInput, dueDateInput].forEach(input => {
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      addTask();
+    }
+  });
+});
+
