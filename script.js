@@ -1,18 +1,43 @@
 
  const taskInput = document.getElementById('taskInput');
+ const dueDateInput = document.getElementById('dueDateInput');
  const addTaskButton = document.getElementById('addTaskBtn');
  const taskList = document.getElementById('taskList');
 
  function addTask() {
   const taskText = taskInput.value.trim();
-  if (taskText === "") return; 
+  const dueDate = dueDateInput.value;
+
+
+  if (taskText === "") {
+    alert("Please enter a task name.");
+    return;
+
+  }
+
+ let displayText = taskText;
+
+
+
+   
 
   const taskItem = document.createElement('li');
 
   
   const span = document.createElement('span');
-  span.textContent = taskText;
+  span.textContent = displayText;
+
+ ;
   taskItem.appendChild(span);
+
+
+
+  const dateSpan = document.createElement('span');
+  dateSpan.textContent = dueDate ? `Due: ${dueDate}` : '';
+  dateSpan.style.marginLeft = '10px';
+  taskItem.appendChild(dateSpan);
+
+
 
 
   const completeBtn = document.createElement('button');
@@ -36,6 +61,7 @@
  
   taskList.appendChild(taskItem);
   taskInput.value = "";
+  dueDateInput.value = "";
   saveTasks();
 }
 
@@ -44,12 +70,15 @@ function saveTasks() {
   const tasks = [];
   const items = taskList.querySelectorAll('li');
 
-  items.forEach(item => {
-    tasks.push({
-      text: item.querySelector('span').textContent,
-      completed: item.classList.contains('completed')
-    });
+items.forEach(item => {
+  const spans = item.querySelectorAll('span'); 
+  tasks.push({
+    text: spans[0].textContent, 
+    dueDate: spans[1] ? spans[1].textContent.replace('Due: ', '') : '', 
+    completed: item.classList.contains('completed')
   });
+});
+
 
   localStorage.setItem('todoTasks', JSON.stringify(tasks));
 }
@@ -63,9 +92,17 @@ function loadTasks() {
 
   tasks.forEach(task => {
     const taskItem = document.createElement('li');
+    
     const span = document.createElement('span');
     span.textContent = task.text;
     taskItem.appendChild(span);
+
+    const dateSpan = document.createElement('span');
+    dateSpan.textContent = task.dueDate ? `Due: ${task.dueDate}` : '';
+    dateSpan.style.marginLeft = '10px';
+    taskItem.appendChild(dateSpan);
+
+
 
 
     const completeBtn = document.createElement('button');
