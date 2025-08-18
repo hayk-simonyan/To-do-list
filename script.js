@@ -27,7 +27,6 @@
   const span = document.createElement('span');
   span.textContent = displayText;
 
- ;
   taskItem.appendChild(span);
 
 
@@ -63,6 +62,15 @@
   taskInput.value = "";
   dueDateInput.value = "";
   saveTasks();
+
+taskItem.addEventListener('click', () => {
+  document.querySelectorAll('li').forEach(li => li.classList.remove('selected'));
+  taskItem.classList.add('selected');
+});
+
+
+
+
 }
 
 
@@ -92,6 +100,7 @@ function loadTasks() {
 
   tasks.forEach(task => {
     const taskItem = document.createElement('li');
+
     
     const span = document.createElement('span');
     span.textContent = task.text;
@@ -101,6 +110,13 @@ function loadTasks() {
     dateSpan.textContent = task.dueDate ? `Due: ${task.dueDate}` : '';
     dateSpan.style.marginLeft = '10px';
     taskItem.appendChild(dateSpan);
+
+
+    taskItem.addEventListener('click', () => {
+  document.querySelectorAll('li').forEach(li => li.classList.remove('selected'));
+  taskItem.classList.add('selected');
+});
+
 
 
 
@@ -141,5 +157,20 @@ window.addEventListener('load', loadTasks);
       addTask();
     }
   });
+});
+
+document.addEventListener('keydown', (event) => {
+  const selected = document.querySelector('li.selected');
+  if (!selected) return;
+
+  if (event.key.toLowerCase() === 'c') {
+    selected.classList.toggle('completed');
+    saveTasks();
+  }
+
+  if (event.key.toLowerCase() === 'd') {
+    taskList.removeChild(selected);
+    saveTasks();
+  }
 });
 
