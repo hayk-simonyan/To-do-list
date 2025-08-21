@@ -4,6 +4,30 @@
  const addTaskButton = document.getElementById('addTaskBtn');
  const taskList = document.getElementById('taskList');
 
+
+function createDeleteButton(taskItem) {
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = 'delete';
+  deleteBtn.classList.add('delete');
+  deleteBtn.addEventListener('click', () => {
+    const confirmDelete = confirm("Are you sure you want to delete this task?");
+    if (confirmDelete) {
+      taskList.removeChild(taskItem);
+      saveTasks();
+    }
+  });
+  return deleteBtn;
+}
+
+
+
+
+ taskInput.addEventListener('input', () => {
+  addTaskButton.disabled = taskInput.value.trim() === "";
+});
+
+addTaskButton.disabled = true;
+
  function addTask() {
   const taskText = taskInput.value.trim();
   const dueDate = dueDateInput.value;
@@ -23,6 +47,8 @@
 
   const taskItem = document.createElement('li');
 
+  const priority = getPriority('High','Medium', 'Low'); 
+  taskItem.classList.add(priority.toLowerCase()); 
   
   const span = document.createElement('span');
   span.textContent = displayText;
@@ -48,19 +74,13 @@
   taskItem.appendChild(completeBtn);
 
 
-  const deleteBtn = document.createElement('button');
-  deleteBtn.textContent = 'delete';
-  deleteBtn.classList.add('delete');
-  deleteBtn.addEventListener('click', () => {
-    taskList.removeChild(taskItem);
-    saveTasks();
-  });
+  const deleteBtn = createDeleteButton(taskItem);
   taskItem.appendChild(deleteBtn);
-
  
   taskList.appendChild(taskItem);
   taskInput.value = "";
   dueDateInput.value = "";
+  addTaskButton.disabled = true;
   saveTasks();
 
 taskItem.addEventListener('click', () => {
@@ -80,13 +100,15 @@ function saveTasks() {
 
 items.forEach(item => {
   const spans = item.querySelectorAll('span'); 
-  tasks.push({
-    text: spans[0].textContent, 
-    dueDate: spans[1] ? spans[1].textContent.replace('Due: ', '') : '', 
-    completed: item.classList.contains('completed')
-  });
+tasks.push({
+  text: spans[0].textContent, 
+  dueDate: spans[1] ? spans[1].textContent.replace('Due: ', '') : '', 
+  completed: item.classList.contains('completed'),
+  priority: item.classList.contains('high') ? 'High' :
+            item.classList.contains('medium') ? 'Medium' :
+            item.classList.contains('low') ? 'Low' : 'Medium' 
 });
-
+})
 
   localStorage.setItem('todoTasks', JSON.stringify(tasks));
 }
@@ -101,6 +123,7 @@ function loadTasks() {
   tasks.forEach(task => {
     const taskItem = document.createElement('li');
 
+    taskItem.classList.add(task.priority.toLowerCase());
     
     const span = document.createElement('span');
     span.textContent = task.text;
@@ -129,16 +152,9 @@ function loadTasks() {
     });
     taskItem.appendChild(completeBtn);
 
-   
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'delete';
-    deleteBtn.classList.add('delete');
-    deleteBtn.addEventListener('click', () => {
-      taskList.removeChild(taskItem);
-      saveTasks();
-    });
-    taskItem.appendChild(deleteBtn);
-
+   const deleteBtn = createDeleteButton(taskItem);
+   taskItem.appendChild(deleteBtn);
+    
     if (task.completed) {
       taskItem.classList.add('completed');
     }
@@ -155,6 +171,7 @@ window.addEventListener('load', loadTasks);
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       addTask();
+      addTaskButton.disabled = true; 
     }
   });
 });
@@ -163,14 +180,18 @@ document.addEventListener('keydown', (event) => {
   const selected = document.querySelector('li.selected');
   if (!selected) return;
 
-  if (event.key.toLowerCase() === 'c') {
+  const key = event.key.toLowerCase();
+
+  if (key === 'c') {
     selected.classList.toggle('completed');
     saveTasks();
   }
 
-  if (event.key.toLowerCase() === 'd') {
-    taskList.removeChild(selected);
-    saveTasks();
+  if (key === 'd') {
+    const confirmDelete = confirm(`Delete this task: "${selected.textContent}"?`);
+        if (confirmDelete) {
+      taskList.removeChild(selected);
+      saveTasks();
+    }
   }
 });
-

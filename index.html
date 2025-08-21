@@ -10,6 +10,14 @@
   <h2>To-Do List</h2>
   <input type="text" id="taskInput" placeholder="Enter a task">
   <input type="date" id="dueDateInput">
+
+<select id="priorityInput">
+  <option value="High">High</option>
+  <option value="Medium" selected>Medium</option>
+  <option value="Low">Low</option>
+</select>
+
+
   <button id="addTaskBtn">Add Task</button>
   <div class="instructions">
   <p><strong>Tip:</strong> Click a task to select it, then press <kbd>C</kbd> to mark it completed or <kbd>D</kbd> to delete it.</p>
@@ -18,6 +26,7 @@
 </div>
   <ul id="taskList"></ul>
 </div>
+<script src="task-priority.js"></script>
 <script src="script.js"></script> 
 </body>
 </html>
