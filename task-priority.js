@@ -1,5 +1,3 @@
- const priorityInput = document.getElementById('priorityInput');
+  const priorityInput = document.getElementById('priorityInput');
 
-function getPriority() {
-  return priorityInput.value;
-}
+function getPriority() { return priorityInput.value;}
