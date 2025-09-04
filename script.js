@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   document.addEventListener('keydown', (event) => {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+      return;
+    }
+
     const selected = document.querySelector('li.selected');
     if (!selected) return;
 
@@ -92,9 +96,11 @@ function addTask() {
   let displayText = taskText;
 
   const taskItem = document.createElement('li');
-  const priority = getPriority('High', 'Medium', 'Low');
+  const priority = getPriority();
   
-   taskItem.classList.add(priority.toLowerCase());
+  if (priority) {
+    taskItem.classList.add(priority.toLowerCase());
+  }
 
 
   const span = document.createElement('span');
@@ -124,11 +130,15 @@ function addTask() {
   addTaskButton.disabled = true;
   saveTasks();
 
-  taskItem.addEventListener('click', () => {
-    document
-      .querySelectorAll('li')
-      .forEach((li) => li.classList.remove('selected'));
-    taskItem.classList.add('selected');
+  taskItem.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      return;
+    }
+    const wasSelected = taskItem.classList.contains('selected');
+    document.querySelectorAll('li').forEach(li => li.classList.remove('selected'));
+    if (!wasSelected) {
+      taskItem.classList.add('selected');
+    }
   });
 }
 
@@ -148,7 +158,7 @@ function saveTasks() {
         ? 'Medium'
         : item.classList.contains('low')
         ? 'Low'
-        : "Medium",
+        : null,
         
     });
     
@@ -167,7 +177,9 @@ function loadTasks() {
     const taskItem = document.createElement('li');
   
 
-    taskItem.classList.remove(task.priority.toLowerCase());
+    if (task.priority) {
+      taskItem.classList.add(task.priority.toLowerCase());
+    }
 
     const span = document.createElement('span');
     span.textContent = task.text;
@@ -178,11 +190,15 @@ function loadTasks() {
     dateSpan.style.marginLeft = '10px';
     taskItem.appendChild(dateSpan);
 
-    taskItem.addEventListener('click', () => {
-      document
-        .querySelectorAll('li')
-        .forEach((li) => li.classList.remove('selected'));
-      taskItem.classList.add('selected');
+    taskItem.addEventListener('click', (event) => {
+      if (event.target.tagName === 'BUTTON') {
+        return;
+      }
+      const wasSelected = taskItem.classList.contains('selected');
+      document.querySelectorAll('li').forEach(li => li.classList.remove('selected'));
+      if (!wasSelected) {
+        taskItem.classList.add('selected');
+      }
     });
 
     const completeBtn = document.createElement('button');
