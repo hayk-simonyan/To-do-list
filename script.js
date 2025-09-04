@@ -12,6 +12,8 @@ const dueDateInput = document.getElementById('dueDateInput');
 const addTaskButton = document.getElementById('addTaskBtn');
 const taskList = document.getElementById('taskList');
 
+
+
 document.addEventListener('DOMContentLoaded', () => {
   addTaskButton.addEventListener('click', addTask);
   window.addEventListener('load', loadTasks);
@@ -69,10 +71,15 @@ function createDeleteButton(taskItem) {
   return deleteBtn;
 }
 
+  
+  
+
+
 function addTask() {
   const taskText = taskInput.value.trim();
   const dueDate = dueDateInput.value;
-
+   const taskPriority = getPriority();
+  
   if (taskText === '') {
     alert('Please enter a task name.');
     return;
@@ -86,7 +93,9 @@ function addTask() {
 
   const taskItem = document.createElement('li');
   const priority = getPriority('High', 'Medium', 'Low');
-  taskItem.classList.add(priority.toLowerCase());
+  
+   taskItem.classList.add(priority.toLowerCase());
+
 
   const span = document.createElement('span');
   span.textContent = displayText;
@@ -139,8 +148,10 @@ function saveTasks() {
         ? 'Medium'
         : item.classList.contains('low')
         ? 'Low'
-        : 'Medium',
+        : "Medium",
+        
     });
+    
   });
 
   localStorage.setItem('todoTasks', JSON.stringify(tasks));
@@ -154,6 +165,7 @@ function loadTasks() {
 
   tasks.forEach((task) => {
     const taskItem = document.createElement('li');
+  
 
     taskItem.classList.remove(task.priority.toLowerCase());
 
